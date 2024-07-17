@@ -65,7 +65,6 @@ router.get("/can-bookmark/:token", (req, res) => {
 });
 
 router.delete("/delete-account", (req, res) => {
-  console.log("body ===> ", req.body);
   User.findOne({ email: req.body.email, token: req.body.token }).then(
     (data) => {
       if (data && req.body.email === data.email && req.body.token === data.token) {
