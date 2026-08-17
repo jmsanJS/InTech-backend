@@ -1,12 +1,29 @@
-var express = require("express");
-var router = express.Router();
+import express, { Request, Response } from "express";
+const router = express.Router();
 
-const User = require("../models/users");
-const { checkBody } = require("../modules/checkBody");
-const uid2 = require("uid2");
-const bcrypt = require("bcrypt");
+import User from "../models/users";
+import { checkBody } from "../modules/checkBody";
+import uid2 from "uid2";
+import bcrypt from "bcrypt";
 
-router.post("/signup", (req, res) => {
+interface SignupBody {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+interface SigninBody {
+  email: string;
+  password: string;
+}
+
+interface DeleteAccountBody {
+  email: string;
+  token: string;
+}
+
+router.post("/signup", (req: Request<{}, {}, SignupBody>, res: Response) => {
   if (!checkBody(req.body, ["firstname", "lastname", "email", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
@@ -34,7 +51,7 @@ router.post("/signup", (req, res) => {
   });
 });
 
-router.post("/signin", (req, res) => {
+router.post("/signin", (req: Request<{}, {}, SigninBody>, res: Response) => {
   if (!checkBody(req.body, ["email", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
@@ -54,7 +71,7 @@ router.post("/signin", (req, res) => {
   });
 });
 
-router.get("/can-bookmark/:token", (req, res) => {
+router.get("/can-bookmark/:token", (req: Request<{ token: string }>, res: Response) => {
   User.findOne({ token: req.params.token }).then((data) => {
     if (data) {
       res.json({ result: true, canBookmark: data.canBookmark });
@@ -64,18 +81,16 @@ router.get("/can-bookmark/:token", (req, res) => {
   });
 });
 
-router.delete("/delete-account", (req, res) => {
-  User.findOne({ email: req.body.email, token: req.body.token }).then(
-    (data) => {
-      if (data && req.body.email === data.email && req.body.token === data.token) {
-        User.deleteOne({ email: req.body.email, token: req.body.token }).then(() => {
-          res.json({ result: true, message: "User account deleted" });
-        });
-      } else {
-        res.json({ result: false, error: "An error has occurred. Please try again" });
-      }
+router.delete("/delete-account", (req: Request<{}, {}, DeleteAccountBody>, res: Response) => {
+  User.findOne({ email: req.body.email, token: req.body.token }).then((data) => {
+    if (data && req.body.email === data.email && req.body.token === data.token) {
+      User.deleteOne({ email: req.body.email, token: req.body.token }).then(() => {
+        res.json({ result: true, message: "User account deleted" });
+      });
+    } else {
+      res.json({ result: false, error: "An error has occurred. Please try again" });
     }
-  )
+  });
 });
 
-module.exports = router;
+export default router;

@@ -1,13 +1,13 @@
-const request = require("supertest");
-const mongoose = require("mongoose");
-const app = require("../app");
-const User = require("../models/users");
+import request from "supertest";
+import mongoose from "mongoose";
+import app from "../app";
+import User from "../models/users";
 
-let response = null;
-let user = null;
+let response: boolean | null = null;
+let user: InstanceType<typeof User> | null = null;
 
 beforeAll(async () => {
-  const connectionString = process.env.CONNECTION_STRING;
+  const connectionString = process.env.CONNECTION_STRING as string;
   await mongoose.connect(connectionString, { connectTimeoutMS: 2000 });
 });
 

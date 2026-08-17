@@ -1,7 +1,16 @@
-const mongoose = require("mongoose");
-const { capitalize } = require("../modules/capitalize");
+import mongoose, { Document } from "mongoose";
+import { capitalize } from "../modules/capitalize";
 
-const userSchema = mongoose.Schema(
+export interface IUser extends Document {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  token?: string;
+  canBookmark?: boolean;
+}
+
+const userSchema = new mongoose.Schema<IUser>(
   {
     firstname: {
       type: String,
@@ -19,7 +28,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      unique: [true, "This email is already registered"],
+      unique: true,
       required: [true, "Missing or empty fields"],
       lowercase: true,
       trim: true,
@@ -40,7 +49,7 @@ const userSchema = mongoose.Schema(
   }
 );
 
-userSchema.pre("save", function (next) {
+userSchema.pre<IUser>("save", function (next) {
   if (this.firstname) {
     this.firstname = capitalize(this.firstname);
   }
@@ -50,6 +59,6 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model<IUser>("users", userSchema);
 
-module.exports = User;
+export default User;

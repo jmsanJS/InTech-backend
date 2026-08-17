@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon --ext ts --exec tsx bin/www.ts",
+    "build": "tsc",
+    "serve": "node dist/bin/www.js",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -18,8 +22,22 @@
     "uid2": "^1.0.0"
   },
   "devDependencies": {
-    "jest": "^28.1.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/debug": "^4.1.13",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^30.0.0",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^26.2.0",
+    "@types/node-fetch": "^2.6.13",
+    "@types/supertest": "^7.2.1",
+    "@types/uid2": "^0.0.2",
+    "jest": "^30",
     "nodemon": "^3.1.0",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.4.12",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
   }
 }
